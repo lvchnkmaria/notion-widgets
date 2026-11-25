@@ -76,19 +76,21 @@ html,body{
 .sh{
   flex:1 1 auto;
   min-height:0;
+  min-width:0;
   width:100%;
   display:flex;
-  flex-wrap:wrap;
-  align-content:flex-start;
-  align-items:flex-start;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:center;
   gap:var(--gap);
-  overflow-y:auto;
-  overflow-x:hidden;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-behavior:smooth;
   padding:3px 2px 6px;
   scrollbar-width:thin;
   scrollbar-color:rgba(158,131,110,.25) transparent
 }
-.sh::-webkit-scrollbar{width:5px}
+.sh::-webkit-scrollbar{height:6px}
 .sh::-webkit-scrollbar-thumb{background:rgba(158,131,110,.25);border-radius:999px}
 .bk{
   --cov-w:clamp(69px,8vw,160px);
@@ -293,6 +295,7 @@ function ren(){
     card.onclick=()=>openDet(b.id);sh.appendChild(card);
   });
 }
+$("sh").addEventListener("wheel",e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.currentTarget.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
 function setTab(m){const s=m==="search";$("ts").classList.toggle("act",s);$("tm").classList.toggle("act",!s);$("ps").style.display=s?"block":"none";$("pm").style.display=s?"none":"block"}
 $("oa").onclick=()=>{up="";$("mm").textContent="";$("am").classList.add("open");$("qi").focus()};
 $("ca").onclick=()=>$("am").classList.remove("open");
