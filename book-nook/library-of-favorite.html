@@ -17,27 +17,30 @@
   --tx:#eae5de;
   --mt:#98928b;
   --dn:#c97a72;
-  --bk-w:clamp(82px,16vw,112px);
-  --bk-h:calc(var(--bk-w)*1.44);
-  --gap:clamp(8px,1.5vw,12px)
+  --gap:clamp(16px,3vw,24px)
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{
   width:100%;
+  height:100%;
   max-width:100%;
   background:transparent!important;
   color:var(--tx);
-  font-family:sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   padding:clamp(4px,1vw,8px);
-  overflow-x:hidden
+  overflow:hidden
 }
 .w{
   width:100%;
-  max-width:100%;
+  height:100%;
   min-width:0;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
   border:1px solid var(--bd);
   border-radius:clamp(12px,2vw,18px);
-  padding:clamp(10px,2vw,16px)
+  padding:clamp(12px,2vh,18px) clamp(14px,2vw,18px);
+  overflow:hidden
 }
 .top{
   display:flex;
@@ -45,18 +48,25 @@ html,body{
   justify-content:space-between;
   align-items:center;
   gap:8px;
-  margin-bottom:clamp(8px,1.5vw,12px)
+  flex-shrink:0;
+  margin-bottom:clamp(8px,1.5vh,14px)
 }
 .top>div{min-width:0;flex:1 1 auto}
-.tt{font-size:clamp(14px,2.4vw,17px);font-weight:700;line-height:1.2}
-.sub{font-size:clamp(10px,1.6vw,11px);color:var(--mt);margin-top:2px}
+.w .tt{
+  font-size:clamp(24px,4vw,30px);
+  font-weight:700;
+  line-height:1.2;
+  letter-spacing:-0.015em;
+  color:var(--tx)
+}
+.sub{font-size:clamp(11px,1.6vw,12.5px);color:var(--mt);margin-top:3px}
 .btn{
   background:var(--s);
   border:1px solid var(--bg2);
   color:var(--tx);
-  font-size:clamp(11px,1.7vw,12px);
+  font-size:clamp(11.5px,1.8vw,13px);
   font-weight:600;
-  padding:clamp(5px,1vw,6px) clamp(9px,1.6vw,11px);
+  padding:clamp(5px,1vw,8px) clamp(10px,1.6vw,13px);
   border-radius:8px;
   cursor:pointer;
   white-space:nowrap;
@@ -64,47 +74,56 @@ html,body{
 }
 .btn:hover{background:var(--g1);border-color:var(--g3)}
 .sh{
-  display:flex;
-  gap:var(--gap);
+  flex:1 1 auto;
+  min-height:0;
   width:100%;
-  min-width:0;
-  overflow-x:auto;
-  overflow-y:hidden;
-  scroll-behavior:smooth;
-  padding:3px 2px 8px;
-  scrollbar-width:none
+  display:flex;
+  flex-wrap:wrap;
+  align-content:flex-start;
+  align-items:flex-start;
+  gap:var(--gap);
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:3px 2px 6px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(158,131,110,.25) transparent
 }
-.sh::-webkit-scrollbar{display:none}
+.sh::-webkit-scrollbar{width:5px}
+.sh::-webkit-scrollbar-thumb{background:rgba(158,131,110,.25);border-radius:999px}
 .bk{
-  flex:0 0 var(--bk-w);
-  width:var(--bk-w);
-  min-width:0;
+  --cov-w:clamp(69px,8vw,160px);
+  width:var(--cov-w);
+  flex:0 0 var(--cov-w);
+  background:transparent;
   display:flex;
   flex-direction:column;
+  align-items:center;
   gap:4px;
   cursor:pointer
 }
 .cv{
   width:100%;
-  height:var(--bk-h);
-  border-radius:9px;
-  background:var(--s);
+  aspect-ratio:108 / 156;
+  border-radius:clamp(6px,1.2vw,11px);
+  background:transparent;
   border:1px solid var(--bd);
   overflow:hidden;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:6px;
+  padding:0;
   transition:.15s
 }
 .bk:hover .cv{transform:translateY(-2px);border-color:var(--g3)}
-.cv img{width:100%;height:100%;object-fit:cover;display:block}
-.nc{font-size:clamp(10px,1.5vw,11px);color:var(--mt);word-break:break-word}
+.cv img{width:100%;height:100%;object-fit:cover;display:block;background:transparent}
+.nc{font-size:clamp(9px,1.4vw,11.5px);color:var(--mt);word-break:break-word;padding:4px}
 .bt{
-  font-size:clamp(11px,1.7vw,12px);
+  width:100%;
+  font-size:clamp(10px,1.6vw,13px);
   font-weight:600;
-  line-height:1.25;
+  line-height:1.15;
+  text-align:center;
   display:-webkit-box;
   -webkit-line-clamp:2;
   -webkit-box-orient:vertical;
@@ -112,7 +131,9 @@ html,body{
   overflow-wrap:anywhere
 }
 .ba,.bn{
-  font-size:clamp(9.5px,1.5vw,10px);
+  width:100%;
+  font-size:clamp(9px,1.4vw,11px);
+  text-align:center;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis
@@ -121,10 +142,14 @@ html,body{
 .bn{color:#cbb29d}
 .emp{
   width:100%;
-  padding:clamp(16px,3vw,22px) 10px;
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
   text-align:center;
   color:var(--mt);
-  font-size:clamp(11px,1.7vw,12px);
+  font-size:clamp(11px,1.8vw,13px);
   border:1px dashed var(--bd);
   border-radius:12px
 }
@@ -203,7 +228,7 @@ html,body{
 .rbt{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rba{font-size:11px;color:var(--mt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dt{display:flex;gap:10px;align-items:flex-start}
-.dc{width:72px;height:106px;border-radius:7px;object-fit:cover;background:var(--s);border:1px solid var(--bd);flex-shrink:0}
+.dc{width:72px;height:106px;border-radius:7px;object-fit:cover;background:transparent;border:1px solid var(--bd);flex-shrink:0}
 .ddt{font-size:14px;font-weight:700;overflow-wrap:anywhere}
 .dda{font-size:11px;color:var(--mt);margin-top:2px;overflow-wrap:anywhere}
 .mf{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
@@ -268,7 +293,6 @@ function ren(){
     card.onclick=()=>openDet(b.id);sh.appendChild(card);
   });
 }
-$("sh").addEventListener("wheel",e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.currentTarget.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
 function setTab(m){const s=m==="search";$("ts").classList.toggle("act",s);$("tm").classList.toggle("act",!s);$("ps").style.display=s?"block":"none";$("pm").style.display=s?"none":"block"}
 $("oa").onclick=()=>{up="";$("mm").textContent="";$("am").classList.add("open");$("qi").focus()};
 $("ca").onclick=()=>$("am").classList.remove("open");
@@ -296,7 +320,7 @@ async function findB(){
 $("qb").onclick=findB;$("qi").onkeydown=e=>{if(e.key==="Enter")findB()};
 $("mf").onchange=e=>{
   const f=e.target.files&&e.target.files[0];if(!f)return;const rd=new FileReader();
-  rd.onload=ev=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),rt=Math.min(220/im.width,330/im.height,1);c.width=Math.round(im.width*rt);c.height=Math.round(im.height*rt);c.getContext("2d").drawImage(im,0,0,c.width,c.height);up=c.toDataURL("image/jpeg",.75);$("mc").value="[Uploaded image]"};im.src=ev.target.result};
+  rd.onload=ev=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),rt=Math.min(220/im.width,330/im.height,1);c.width=Math.round(im.width*rt);c.height=Math.round(im.height*rt);const ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);up=c.toDataURL("image/png");$("mc").value="[Uploaded image]"};im.src=ev.target.result};
   rd.readAsDataURL(f);
 };
 $("ms").onclick=()=>{
