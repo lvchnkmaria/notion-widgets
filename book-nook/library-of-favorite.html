@@ -60,6 +60,44 @@ html,body{
   color:var(--tx)
 }
 .sub{font-size:clamp(11px,1.6vw,12.5px);color:var(--mt);margin-top:3px}
+.acts{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  flex-shrink:0
+}
+.fbox{
+  display:none;
+  align-items:center;
+  gap:4px;
+  background:var(--in);
+  border:1px solid var(--g3);
+  border-radius:8px;
+  padding:3px 7px
+}
+.fbox.open{display:flex}
+.fin{
+  width:clamp(120px,18vw,190px);
+  min-width:0;
+  background:transparent;
+  border:none;
+  color:var(--tx);
+  font-size:12px;
+  outline:none;
+  padding:2px 0
+}
+.fin::placeholder{color:var(--mt)}
+.fclr{
+  background:none;
+  border:none;
+  color:var(--mt);
+  font-size:14px;
+  line-height:1;
+  cursor:pointer;
+  padding:0 2px
+}
+.fclr:hover{color:var(--tx)}
 .btn{
   background:var(--s);
   border:1px solid var(--bg2);
@@ -72,7 +110,7 @@ html,body{
   white-space:nowrap;
   flex-shrink:0
 }
-.btn:hover{background:var(--g1);border-color:var(--g3)}
+.btn:hover,.btn.act{background:var(--g1);border-color:var(--g3)}
 .sh{
   flex:1 1 auto;
   min-height:0;
@@ -243,7 +281,14 @@ html,body{
 <div class="w">
   <div class="top">
     <div><div class="tt">Favorite Books</div><div class="sub" id="cnt">0 books</div></div>
-    <button class="btn" id="oa">+ Add book</button>
+    <div class="acts">
+      <div class="fbox" id="fbox">
+        <input class="fin" id="fi" type="text" placeholder="Filter library...">
+        <button class="fclr" id="fclr" title="Clear">×</button>
+      </div>
+      <button class="btn" id="fs">🔍 Search</button>
+      <button class="btn" id="oa">+ Add book</button>
+    </div>
   </div>
   <div class="sh" id="sh"></div>
 </div>
@@ -277,14 +322,18 @@ html,body{
 
 <script>
 const K="notion_fav_bookshelf_v1",$=id=>document.getElementById(id);
-let books=[],aid=null,up="";
+let books=[],aid=null,up="",qFilter="";
 const ld=()=>{try{const d=JSON.parse(localStorage.getItem(K)||"null");if(Array.isArray(d))books=d}catch(e){}};
 const sv=()=>{try{localStorage.setItem(K,JSON.stringify(books))}catch(e){}};
 const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function ren(){
-  const sh=$("sh");$("cnt").textContent=`${books.length} ${books.length===1?"book":"books"}`;sh.innerHTML="";
+  const sh=$("sh"),q=qFilter.trim().toLowerCase();
+  const list=q?books.filter(b=>[b.title,b.author,b.note].some(x=>String(x||"").toLowerCase().includes(q))):books;
+  $("cnt").textContent=q?`${list.length} of ${books.length} ${books.length===1?"book":"books"}`:`${books.length} ${books.length===1?"book":"books"}`;
+  sh.innerHTML="";
   if(!books.length){sh.innerHTML='<div class="emp">Empty. Click "+ Add book".</div>';return}
-  books.forEach(b=>{
+  if(!list.length){sh.innerHTML='<div class="emp">No matching books found.</div>';return}
+  list.forEach(b=>{
     const card=document.createElement("div");card.className="bk";
     const cv=document.createElement("div");cv.className="cv";
     if(b.cover){const img=document.createElement("img");img.src=b.cover;img.alt=b.title;img.loading="lazy";img.onerror=()=>{img.remove();cv.innerHTML=`<div class="nc">${esc(b.title)}</div>`};cv.appendChild(img)}
@@ -296,6 +345,15 @@ function ren(){
   });
 }
 $("sh").addEventListener("wheel",e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.currentTarget.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
+$("fs").onclick=()=>{
+  const open=!$("fbox").classList.contains("open");
+  $("fbox").classList.toggle("open",open);
+  $("fs").classList.toggle("act",open);
+  if(open)$("fi").focus();
+  else{qFilter="";$("fi").value="";ren()}
+};
+$("fi").oninput=e=>{qFilter=e.target.value;ren()};
+$("fclr").onclick=()=>{qFilter="";$("fi").value="";ren();$("fi").focus()};
 function setTab(m){const s=m==="search";$("ts").classList.toggle("act",s);$("tm").classList.toggle("act",!s);$("ps").style.display=s?"block":"none";$("pm").style.display=s?"none":"block"}
 $("oa").onclick=()=>{up="";$("mm").textContent="";$("am").classList.add("open");$("qi").focus()};
 $("ca").onclick=()=>$("am").classList.remove("open");
