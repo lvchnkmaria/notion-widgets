@@ -319,4 +319,14 @@ $("ms").onclick=()=>{
   sv();ren();$("mt").value="";$("ma").value="";$("mc").value="";$("mn").value="";$("mf").value="";up="";$("am").classList.remove("open");
 };
 function openDet(id){
-  const b=books.find(x=>x.id===id);if(!b)return;
+  const b=books.find(x=>x.id===id);if(!b)return;aid=id;
+  $("dt").textContent=b.title;$("da").textContent=b.author||"";$("dn").value=b.note||"";
+  $("dcu").value=b.cover&&!b.cover.startsWith("data:")?b.cover:"";$("dc").src=b.cover||"";$("dm").classList.add("open");
+}
+$("cd").onclick=()=>$("dm").classList.remove("open");
+$("ds").onclick=()=>{const b=books.find(x=>x.id===aid);if(!b)return;b.note=$("dn").value.trim();const nc=$("dcu").value.trim();if(nc)b.cover=nc;sv();ren();$("dm").classList.remove("open")};
+$("ddel").onclick=()=>{books=books.filter(x=>x.id!==aid);sv();ren();$("dm").classList.remove("open")};
+ld();ren();
+</script>
+</body>
+</html>
