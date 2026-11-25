@@ -26,7 +26,7 @@ html,body{
   max-width:100%;
   background:transparent!important;
   color:var(--tx);
-  font-family:sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   padding:clamp(4px,1vw,8px);
   overflow:hidden
 }
@@ -40,7 +40,7 @@ html,body{
   container-type:size;
   border:1px solid var(--bd);
   border-radius:clamp(12px,2vw,18px);
-  padding:clamp(10px,1.8vh,16px) clamp(12px,2vw,16px)
+  padding:clamp(12px,2vh,18px) clamp(14px,2vw,18px)
 }
 .top{
   display:flex;
@@ -49,18 +49,23 @@ html,body{
   align-items:center;
   gap:8px;
   flex-shrink:0;
-  margin-bottom:clamp(6px,1.4vh,12px)
+  margin-bottom:clamp(8px,1.5vh,14px)
 }
 .top>div{min-width:0;flex:1 1 auto}
-.tt{font-size:clamp(13px,3.2cqh,18px);font-weight:700;line-height:1.2}
-.sub{font-size:clamp(10px,2.1cqh,12px);color:var(--mt);margin-top:2px}
+.tt{
+  font-size:clamp(20px,6.5cqh,24px);
+  font-weight:700;
+  line-height:1.2;
+  letter-spacing:-0.01em
+}
+.sub{font-size:clamp(11px,2.2cqh,12.5px);color:var(--mt);margin-top:3px}
 .btn{
   background:var(--s);
   border:1px solid var(--bg2);
   color:var(--tx);
-  font-size:clamp(11px,2.2cqh,12px);
+  font-size:clamp(11.5px,2.3cqh,13px);
   font-weight:600;
-  padding:clamp(4px,1cqh,7px) clamp(9px,1.6vw,12px);
+  padding:clamp(5px,1.1cqh,8px) clamp(10px,1.6vw,13px);
   border-radius:8px;
   cursor:pointer;
   white-space:nowrap;
