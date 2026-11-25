@@ -22,21 +22,25 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{
   width:100%;
-  min-height:100%;
+  height:100%;
+  max-width:100%;
   background:transparent!important;
   color:var(--tx);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   padding:clamp(4px,1vw,8px);
-  overflow-x:hidden
+  overflow:hidden
 }
 .w{
   width:100%;
-  min-height:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
   display:flex;
   flex-direction:column;
   border:1px solid var(--bd);
   border-radius:clamp(12px,2vw,18px);
-  padding:clamp(12px,2vh,18px) clamp(14px,2vw,18px)
+  padding:clamp(12px,2vh,18px) clamp(14px,2vw,18px);
+  overflow:hidden
 }
 .top{
   display:flex;
@@ -71,14 +75,21 @@ html,body{
 .btn:hover{background:var(--g1);border-color:var(--g3)}
 .sh{
   flex:1 1 auto;
+  min-height:0;
   width:100%;
   display:flex;
   flex-wrap:wrap;
   align-content:flex-start;
   align-items:flex-start;
   gap:var(--gap);
-  padding:3px 2px 6px
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:3px 2px 6px;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(158,131,110,.25) transparent
 }
+.sh::-webkit-scrollbar{width:5px}
+.sh::-webkit-scrollbar-thumb{background:rgba(158,131,110,.25);border-radius:999px}
 .bk{
   --cov-w:clamp(69px,8vw,160px);
   width:var(--cov-w);
@@ -87,7 +98,7 @@ html,body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:5px;
+  gap:4px;
   cursor:pointer
 }
 .cv{
