@@ -22,22 +22,18 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{
   width:100%;
-  height:100%;
-  max-width:100%;
+  min-height:100%;
   background:transparent!important;
   color:var(--tx);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   padding:clamp(4px,1vw,8px);
-  overflow:hidden
+  overflow-x:hidden
 }
 .w{
   width:100%;
-  height:100%;
-  min-width:0;
-  min-height:0;
+  min-height:100%;
   display:flex;
   flex-direction:column;
-  container-type:size;
   border:1px solid var(--bd);
   border-radius:clamp(12px,2vw,18px);
   padding:clamp(12px,2vh,18px) clamp(14px,2vw,18px)
@@ -53,20 +49,20 @@ html,body{
 }
 .top>div{min-width:0;flex:1 1 auto}
 .w .tt{
-  font-size:clamp(24px,7cqh,30px);
+  font-size:clamp(24px,4vw,30px);
   font-weight:700;
   line-height:1.2;
   letter-spacing:-0.015em;
   color:var(--tx)
 }
-.sub{font-size:clamp(11px,2.2cqh,12.5px);color:var(--mt);margin-top:3px}
+.sub{font-size:clamp(11px,1.6vw,12.5px);color:var(--mt);margin-top:3px}
 .btn{
   background:var(--s);
   border:1px solid var(--bg2);
   color:var(--tx);
-  font-size:clamp(11.5px,2.3cqh,13px);
+  font-size:clamp(11.5px,1.8vw,13px);
   font-weight:600;
-  padding:clamp(5px,1.1cqh,8px) clamp(10px,1.6vw,13px);
+  padding:clamp(5px,1vw,8px) clamp(10px,1.6vw,13px);
   border-radius:8px;
   cursor:pointer;
   white-space:nowrap;
@@ -74,39 +70,30 @@ html,body{
 }
 .btn:hover{background:var(--g1);border-color:var(--g3)}
 .sh{
-  --row-min:clamp(96px,34cqh,175px);
   flex:1 1 auto;
-  min-height:0;
-  min-width:0;
   width:100%;
-  display:grid;
-  grid-auto-flow:column;
-  grid-template-rows:repeat(auto-fit,minmax(var(--row-min),1fr));
-  grid-auto-columns:max-content;
-  align-content:start;
-  align-items:center;
+  display:flex;
+  flex-wrap:wrap;
+  align-content:flex-start;
+  align-items:flex-start;
   gap:var(--gap);
-  overflow-x:auto;
-  overflow-y:auto;
-  scroll-behavior:smooth;
-  padding:3px 2px 6px;
-  scrollbar-width:none
+  padding:3px 2px 6px
 }
-.sh::-webkit-scrollbar{display:none}
 .bk{
-  --cov-h:clamp(56px,22cqh,135px);
+  --cov-w:clamp(74px,11vw,126px);
+  width:var(--cov-w);
+  flex:0 0 var(--cov-w);
   background:transparent;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:clamp(2px,0.5cqh,4px);
+  gap:4px;
   cursor:pointer
 }
 .cv{
-  height:var(--cov-h);
+  width:100%;
   aspect-ratio:108 / 156;
-  max-width:85vw;
-  border-radius:clamp(6px,1.5cqh,11px);
+  border-radius:clamp(6px,1.2vw,11px);
   background:transparent;
   border:1px solid var(--bd);
   overflow:hidden;
@@ -119,11 +106,10 @@ html,body{
 }
 .bk:hover .cv{transform:translateY(-2px);border-color:var(--g3)}
 .cv img{width:100%;height:100%;object-fit:cover;display:block;background:transparent}
-.nc{font-size:clamp(9px,2cqh,11.5px);color:var(--mt);word-break:break-word;padding:4px}
+.nc{font-size:clamp(9px,1.4vw,11.5px);color:var(--mt);word-break:break-word;padding:4px}
 .bt{
-  width:var(--cov-h);
-  max-width:85vw;
-  font-size:clamp(10px,2.2cqh,13px);
+  width:100%;
+  font-size:clamp(10px,1.6vw,13px);
   font-weight:600;
   line-height:1.15;
   text-align:center;
@@ -134,9 +120,8 @@ html,body{
   overflow-wrap:anywhere
 }
 .ba,.bn{
-  width:var(--cov-h);
-  max-width:85vw;
-  font-size:clamp(9px,1.8cqh,11px);
+  width:100%;
+  font-size:clamp(9px,1.4vw,11px);
   text-align:center;
   white-space:nowrap;
   overflow:hidden;
@@ -145,10 +130,7 @@ html,body{
 .ba{color:var(--mt)}
 .bn{color:#cbb29d}
 .emp{
-  grid-column:1 / -1;
-  grid-row:1 / -1;
   width:100%;
-  height:100%;
   min-height:44px;
   display:flex;
   align-items:center;
@@ -156,7 +138,7 @@ html,body{
   padding:8px 12px;
   text-align:center;
   color:var(--mt);
-  font-size:clamp(11px,2.5cqh,13px);
+  font-size:clamp(11px,1.8vw,13px);
   border:1px dashed var(--bd);
   border-radius:12px
 }
@@ -300,7 +282,6 @@ function ren(){
     card.onclick=()=>openDet(b.id);sh.appendChild(card);
   });
 }
-$("sh").addEventListener("wheel",e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.currentTarget.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
 function setTab(m){const s=m==="search";$("ts").classList.toggle("act",s);$("tm").classList.toggle("act",!s);$("ps").style.display=s?"block":"none";$("pm").style.display=s?"none":"block"}
 $("oa").onclick=()=>{up="";$("mm").textContent="";$("am").classList.add("open");$("qi").focus()};
 $("ca").onclick=()=>$("am").classList.remove("open");
