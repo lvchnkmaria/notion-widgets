@@ -44,14 +44,13 @@ html,body{
 }
 .top{
   display:flex;
-  flex-wrap:wrap;
   justify-content:space-between;
   align-items:center;
-  gap:8px;
+  gap:12px;
   flex-shrink:0;
   margin-bottom:clamp(8px,1.5vh,14px)
 }
-.top>div{min-width:0;flex:1 1 auto}
+.top>div:first-child{min-width:0;flex:1 1 auto}
 .w .tt{
   font-size:clamp(24px,4vw,30px);
   font-weight:700;
@@ -63,9 +62,16 @@ html,body{
 .acts{
   display:flex;
   align-items:center;
-  gap:6px;
-  flex-wrap:wrap;
-  flex-shrink:0
+  justify-content:flex-end;
+  gap:0;
+  flex-shrink:0;
+  margin-left:auto
+}
+.acts .btn + .btn{
+  margin-left:38px
+}
+.acts .fbox.open + .btn{
+  margin-left:10px
 }
 .fbox{
   display:none;
@@ -74,7 +80,8 @@ html,body{
   background:var(--in);
   border:1px solid var(--g3);
   border-radius:8px;
-  padding:3px 7px
+  padding:3px 7px;
+  margin-right:10px
 }
 .fbox.open{display:flex}
 .fin{
