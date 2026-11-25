@@ -34,6 +34,7 @@ html,body{
   min-height:100%;
   display:flex;
   flex-direction:column;
+  container-type:size;
   border:1px solid var(--bd);
   border-radius:clamp(12px,2vw,18px);
   padding:clamp(12px,2vh,18px) clamp(14px,2vw,18px)
@@ -49,7 +50,7 @@ html,body{
 }
 .top>div{min-width:0;flex:1 1 auto}
 .w .tt{
-  font-size:clamp(24px,4vw,30px);
+  font-size:clamp(24px,7cqh,30px);
   font-weight:700;
   line-height:1.2;
   letter-spacing:-0.015em;
@@ -80,20 +81,20 @@ html,body{
   padding:3px 2px 6px
 }
 .bk{
-  --cov-w:clamp(74px,11vw,126px);
+  --cov-w:clamp(56px,7.5vw,88px);
   width:var(--cov-w);
   flex:0 0 var(--cov-w);
   background:transparent;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:4px;
+  gap:3px;
   cursor:pointer
 }
 .cv{
   width:100%;
   aspect-ratio:108 / 156;
-  border-radius:clamp(6px,1.2vw,11px);
+  border-radius:clamp(5px,1vw,9px);
   background:transparent;
   border:1px solid var(--bd);
   overflow:hidden;
@@ -106,10 +107,10 @@ html,body{
 }
 .bk:hover .cv{transform:translateY(-2px);border-color:var(--g3)}
 .cv img{width:100%;height:100%;object-fit:cover;display:block;background:transparent}
-.nc{font-size:clamp(9px,1.4vw,11.5px);color:var(--mt);word-break:break-word;padding:4px}
+.nc{font-size:clamp(8.5px,1.2vw,10.5px);color:var(--mt);word-break:break-word;padding:3px}
 .bt{
   width:100%;
-  font-size:clamp(10px,1.6vw,13px);
+  font-size:clamp(9.5px,1.35vw,11.5px);
   font-weight:600;
   line-height:1.15;
   text-align:center;
@@ -121,7 +122,7 @@ html,body{
 }
 .ba,.bn{
   width:100%;
-  font-size:clamp(9px,1.4vw,11px);
+  font-size:clamp(8.5px,1.2vw,10px);
   text-align:center;
   white-space:nowrap;
   overflow:hidden;
@@ -318,14 +319,4 @@ $("ms").onclick=()=>{
   sv();ren();$("mt").value="";$("ma").value="";$("mc").value="";$("mn").value="";$("mf").value="";up="";$("am").classList.remove("open");
 };
 function openDet(id){
-  const b=books.find(x=>x.id===id);if(!b)return;aid=id;
-  $("dt").textContent=b.title;$("da").textContent=b.author||"";$("dn").value=b.note||"";
-  $("dcu").value=b.cover&&!b.cover.startsWith("data:")?b.cover:"";$("dc").src=b.cover||"";$("dm").classList.add("open");
-}
-$("cd").onclick=()=>$("dm").classList.remove("open");
-$("ds").onclick=()=>{const b=books.find(x=>x.id===aid);if(!b)return;b.note=$("dn").value.trim();const nc=$("dcu").value.trim();if(nc)b.cover=nc;sv();ren();$("dm").classList.remove("open")};
-$("ddel").onclick=()=>{books=books.filter(x=>x.id!==aid);sv();ren();$("dm").classList.remove("open")};
-ld();ren();
-</script>
-</body>
-</html>
+  const b=books.find(x=>x.id===id);if(!b)return;
