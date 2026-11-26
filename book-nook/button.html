@@ -4,21 +4,20 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="color-scheme" content="dark"/>
-<title>Custom Embed</title>
+<title>Embed Button</title>
 <style>
 :root{
 --s:#202320;
 --in:#161715;
---bd:rgba(158,131,110,.22);
---bg2:rgba(107,140,119,.28);
+--bd:rgba(158,131,110,.24);
+--bg2:rgba(107,140,119,.30);
 --g1:#2a3a30;
 --g2:#3f5c4b;
 --g3:#6b8f78;
 --tx:#eae5de;
 --mt:#9d958c;
 --ac:#cbb29d;
---dn:#c97a72;
---w-bg:rgba(92,71,55,.10)
+--dn:#c97a72
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{
@@ -28,51 +27,40 @@ max-width:100%;
 background:transparent!important;
 color:var(--tx);
 font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-padding:clamp(4px,1vw,8px);
 overflow:hidden
 }
-.w{
+.root{
 width:100%;
 height:100%;
 min-width:0;
 min-height:0;
 display:flex;
 flex-direction:column;
-background:var(--w-bg);
-border:1px solid var(--bd);
-border-radius:clamp(12px,2vw,18px);
-padding:clamp(14px,2.2vh,18px) clamp(14px,2vw,18px);
+background:transparent;
+padding:clamp(4px,1vw,8px);
 overflow:hidden
 }
-.bar{
-display:flex;
+.row-top{
+display:inline-flex;
 align-items:center;
-justify-content:space-between;
-gap:10px;
-flex-wrap:wrap;
-flex-shrink:0
+gap:clamp(6px,1vw,10px);
+flex-shrink:0;
+width:fit-content;
+max-width:100%
 }
-.left-grp{
-display:flex;
-align-items:center;
-gap:10px;
-min-width:0;
-flex:1 1 180px
-}
-.main-btn{
-height:clamp(34px,4.4vh,40px);
+.ebtn{
+height:clamp(28px,5.5vh,48px);
+padding:0 clamp(12px,2.4vw,24px);
+font-size:clamp(12px,2.1vw,16px);
+border-radius:clamp(7px,1.2vw,11px);
 display:inline-flex;
 align-items:center;
 justify-content:center;
-gap:8px;
 background:var(--s);
 border:1px solid var(--bg2);
 color:var(--tx);
-font-size:clamp(12.5px,1.8vw,14px);
 font-weight:400;
 line-height:1;
-padding:0 clamp(14px,2vw,18px);
-border-radius:10px;
 cursor:pointer;
 white-space:nowrap;
 max-width:100%;
@@ -80,63 +68,44 @@ overflow:hidden;
 text-overflow:ellipsis;
 transition:.15s
 }
-.main-btn:hover{
+.ebtn:hover{
 background:var(--g1);
 border-color:var(--g3)
 }
-.main-btn.primary{
-background:var(--g1);
-border-color:rgba(107,140,119,.45)
-}
-.main-btn.primary:hover{
-background:var(--g2);
-border-color:var(--g3)
-}
-.url-hint{
-font-size:11.5px;
-color:var(--mt);
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-min-width:0
-}
-.right-grp{
-display:flex;
-align-items:center;
-gap:8px;
-flex-shrink:0
-}
-.icon-btn{
-height:clamp(30px,3.8vh,34px);
+.gear-btn{
+width:clamp(24px,4vh,34px);
+height:clamp(24px,4vh,34px);
 display:inline-flex;
 align-items:center;
 justify-content:center;
-background:var(--in);
-border:1px solid var(--bd);
+background:transparent;
+border:none;
 color:var(--mt);
-font-size:12px;
-font-weight:400;
-line-height:1;
-padding:0 11px;
-border-radius:8px;
+border-radius:7px;
 cursor:pointer;
-white-space:nowrap;
+flex-shrink:0;
 transition:.15s
 }
-.icon-btn:hover,.icon-btn.act{
-background:var(--g1);
-border-color:var(--g3);
-color:var(--tx)
+.gear-btn:hover,.gear-btn.act{
+color:var(--tx);
+background:rgba(158,131,110,.12)
+}
+.gear-btn svg{
+width:clamp(14px,2.2vh,18px);
+height:clamp(14px,2.2vh,18px);
+display:block
 }
 .panel{
 display:none;
-margin-top:12px;
+margin-top:8px;
+max-width:420px;
+width:100%;
 background:var(--in);
 border:1px solid var(--bd);
 border-radius:12px;
-padding:12px;
+padding:11px;
 flex-direction:column;
-gap:9px;
+gap:8px;
 flex-shrink:0
 }
 .panel.open{display:flex}
@@ -146,7 +115,7 @@ gap:8px;
 flex-wrap:wrap
 }
 .field{
-flex:1 1 160px;
+flex:1 1 150px;
 min-width:0;
 display:flex;
 flex-direction:column;
@@ -162,7 +131,7 @@ min-width:0;
 background:var(--s);
 border:1px solid var(--bd);
 border-radius:8px;
-padding:7px 9px;
+padding:6px 8px;
 font-size:12px;
 color:var(--tx);
 outline:none;
@@ -179,33 +148,33 @@ flex-wrap:wrap;
 margin-top:2px
 }
 .msg{font-size:11px;color:var(--ac)}
-.act-row{display:flex;gap:8px;align-items:center}
+.act-row{display:flex;gap:6px;align-items:center}
 .clr-btn{
 background:rgba(201,122,114,.14);
 border:1px solid rgba(201,122,114,.35);
 color:var(--dn);
-font-size:11.5px;
-padding:6px 10px;
-border-radius:8px;
+font-size:11px;
+padding:5px 9px;
+border-radius:7px;
 cursor:pointer
 }
 .save-btn{
 background:var(--g2);
 border:1px solid var(--g3);
 color:#f3f1ed;
-font-size:12px;
-padding:6px 14px;
-border-radius:8px;
+font-size:11.5px;
+padding:5px 12px;
+border-radius:7px;
 cursor:pointer
 }
 .save-btn:hover{background:var(--g3)}
 .frame-wrap{
 display:none;
-margin-top:12px;
+margin-top:8px;
 flex:1 1 auto;
 min-height:0;
 width:100%;
-border-radius:12px;
+border-radius:10px;
 overflow:hidden;
 border:1px solid var(--bd);
 background:var(--in)
@@ -218,42 +187,34 @@ border:none;
 display:block;
 background:transparent
 }
-.status-note{
-font-size:11px;
-color:var(--mt);
-margin-top:8px;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
 </style>
 </head>
 <body>
-<div class="w" id="w">
-<div class="bar">
-<div class="left-grp">
-<button class="main-btn primary" id="launchBtn" type="button">Embed link</button>
-<span class="url-hint" id="urlHint">No link set yet</span>
-</div>
-<div class="right-grp">
-<button class="icon-btn" id="editBtn" type="button">Customize</button>
-</div>
+<div class="root">
+<div class="row-top">
+<button class="ebtn" id="launchBtn" type="button">Embed link</button>
+<button class="gear-btn" id="gearBtn" type="button" title="Settings" aria-label="Settings">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="12" cy="12" r="3"/>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+</svg>
+</button>
 </div>
 
 <div class="panel" id="panel">
 <div class="grid2">
 <div class="field">
 <label class="lb" for="labelInput">Button label</label>
-<input class="in" id="labelInput" type="text" placeholder="e.g. Open Reading List, Soundtrack..."/>
+<input class="in" id="labelInput" type="text" placeholder="Embed link"/>
 </div>
 <div class="field">
-<label class="lb" for="urlInput">Link URL</label>
+<label class="lb" for="urlInput">URL</label>
 <input class="in" id="urlInput" type="url" placeholder="https://..."/>
 </div>
 </div>
 <div class="grid2">
 <div class="field">
-<label class="lb" for="modeSelect">Click behavior</label>
+<label class="lb" for="modeSelect">Action</label>
 <select class="sel" id="modeSelect">
 <option value="tab">Open in new tab</option>
 <option value="embed">Toggle inline embed</option>
@@ -264,7 +225,7 @@ text-overflow:ellipsis
 <span class="msg" id="msg"></span>
 <div class="act-row">
 <button class="clr-btn" id="clearBtn" type="button">Reset</button>
-<button class="save-btn" id="saveBtn" type="button">Save button</button>
+<button class="save-btn" id="saveBtn" type="button">Save</button>
 </div>
 </div>
 </div>
@@ -272,12 +233,10 @@ text-overflow:ellipsis
 <div class="frame-wrap" id="frameWrap">
 <iframe id="embedFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
 </div>
-
-<div class="status-note" id="statusNote"></div>
 </div>
 
 <script>
-const STORAGE_KEY="book_nook_custom_embed_v1";
+const STORAGE_KEY="book_nook_embed_btn_v1";
 const $=id=>document.getElementById(id);
 
 let state={
@@ -291,13 +250,13 @@ function loadState(){
 try{
 const raw=localStorage.getItem(STORAGE_KEY);
 if(!raw)return;
-const parsed=JSON.parse(raw);
-if(parsed&&typeof parsed==="object"){
+const p=JSON.parse(raw);
+if(p&&typeof p==="object"){
 state={
-label:typeof parsed.label==="string"&&parsed.label.trim()?parsed.label.trim():"Embed link",
-url:typeof parsed.url==="string"?parsed.url.trim():"",
-mode:parsed.mode==="embed"?"embed":"tab",
-embedOpen:Boolean(parsed.embedOpen)
+label:typeof p.label==="string"&&p.label.trim()?p.label.trim():"Embed link",
+url:typeof p.url==="string"?p.url.trim():"",
+mode:p.mode==="embed"?"embed":"tab",
+embedOpen:Boolean(p.embedOpen)
 };
 }
 }catch(e){}
@@ -319,19 +278,12 @@ return"";
 
 function render(){
 $("launchBtn").textContent=state.label||"Embed link";
-$("urlHint").textContent=state.url?state.url:"Click Customize to set label & link";
 const showFrame=state.mode==="embed"&&state.embedOpen&&Boolean(state.url);
 $("frameWrap").classList.toggle("open",showFrame);
 if(showFrame){
-if($("embedFrame").src!==state.url){
-$("embedFrame").src=state.url;
-}
-$("statusNote").textContent="Showing inline embed (if a site blocks embeds, switch mode to Open in new tab).";
+if($("embedFrame").src!==state.url)$("embedFrame").src=state.url;
 }else{
 $("embedFrame").src="about:blank";
-$("statusNote").textContent=state.url
-?`Mode: ${state.mode==="embed"?"Inline embed":"New tab"}`
-:"";
 }
 }
 
@@ -341,19 +293,19 @@ $("urlInput").value=state.url;
 $("modeSelect").value=state.mode;
 $("msg").textContent="";
 $("panel").classList.add("open");
-$("editBtn").classList.add("act");
+$("gearBtn").classList.add("act");
 $("labelInput").focus();
 }
 
 function closePanel(){
 $("panel").classList.remove("open");
-$("editBtn").classList.remove("act");
+$("gearBtn").classList.remove("act");
 }
 
 $("launchBtn").onclick=()=>{
 if(!state.url){
 openPanel();
-$("msg").textContent="Paste a link first.";
+$("msg").textContent="Add a URL first.";
 return;
 }
 if(state.mode==="tab"){
@@ -365,7 +317,7 @@ render();
 }
 };
 
-$("editBtn").onclick=()=>{
+$("gearBtn").onclick=()=>{
 if($("panel").classList.contains("open"))closePanel();
 else openPanel();
 };
@@ -374,7 +326,7 @@ $("saveBtn").onclick=()=>{
 const nextLabel=$("labelInput").value.trim()||"Embed link";
 const nextUrl=normalizeUrl($("urlInput").value);
 if($("urlInput").value.trim()&&!nextUrl){
-$("msg").textContent="Please enter a valid http(s) URL.";
+$("msg").textContent="Invalid URL.";
 return;
 }
 state.label=nextLabel;
@@ -391,7 +343,7 @@ state={label:"Embed link",url:"",mode:"tab",embedOpen:false};
 saveState();
 render();
 openPanel();
-$("msg").textContent="Reset to default.";
+$("msg").textContent="Reset.";
 };
 
 loadState();
