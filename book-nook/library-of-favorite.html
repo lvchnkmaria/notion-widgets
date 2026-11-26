@@ -7,17 +7,17 @@
 <title>Bookshelf</title>
 <style>
 :root{
---s:#24201c;
---in:#181512;
---bd:rgba(158,131,110,.28);
---bg2:rgba(158,131,110,.34);
---g1:#382d24;
---g2:#544234;
---g3:#8c6f56;
+--s:#202320;
+--in:#161715;
+--bd:rgba(158,131,110,.22);
+--bg2:rgba(107,140,119,.28);
+--g1:#2a3a30;
+--g2:#3f5c4b;
+--g3:#6b8f78;
 --tx:#eae5de;
---mt:#a89f95;
+--mt:#9d958c;
 --dn:#c97a72;
---w-bg:rgba(92,71,55,.28);
+--w-bg:rgba(92,71,55,.10);
 --gap:clamp(16px,3vw,24px)
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -148,10 +148,10 @@ overflow-y:hidden;
 scroll-behavior:smooth;
 padding:clamp(4px,1vh,12px) 2px;
 scrollbar-width:thin;
-scrollbar-color:rgba(158,131,110,.32) transparent
+scrollbar-color:rgba(158,131,110,.26) transparent
 }
 .sh::-webkit-scrollbar{height:6px}
-.sh::-webkit-scrollbar-thumb{background:rgba(158,131,110,.32);border-radius:999px}
+.sh::-webkit-scrollbar-thumb{background:rgba(158,131,110,.26);border-radius:999px}
 .bk{
 --cov-w:clamp(76px,15vw,160px);
 width:var(--cov-w);
@@ -201,7 +201,7 @@ overflow:hidden;
 text-overflow:ellipsis
 }
 .ba{color:var(--mt)}
-.bn{color:#d4bc9e}
+.bn{color:#cbb29d}
 .emp{
 width:100%;
 min-height:44px;
@@ -219,7 +219,7 @@ border-radius:12px
 display:none;
 position:fixed;
 inset:0;
-background:rgba(12,10,8,.82);
+background:rgba(10,12,11,.82);
 z-index:50;
 align-items:center;
 justify-content:center;
@@ -231,7 +231,7 @@ width:100%;
 max-width:410px;
 max-height:88vh;
 overflow-y:auto;
-background:#1e1a16;
+background:#1a1c1a;
 border:1px solid var(--bd);
 border-radius:14px;
 padding:14px;
