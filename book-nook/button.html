@@ -31,20 +31,18 @@ max-width:100%;
 background:transparent!important;
 color:var(--tx);
 font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-overflow:hidden
+overflow-x:hidden;
+overflow-y:auto
 }
 .root{
 width:100%;
-height:100%;
-min-width:0;
-min-height:0;
+min-height:100%;
 display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
 background:transparent;
-padding:6px;
-overflow:hidden
+padding:6px
 }
 .root.has-expanded{
 justify-content:flex-start
@@ -93,7 +91,6 @@ transition:background .15s,border-color .15s
 background:var(--btn-bg-h);
 border-color:var(--btn-bd-h)
 }
-/* Ручки ресайзу самої кнопки (активні у режимі налаштування) */
 .rh{
 display:none;
 position:absolute;
@@ -230,17 +227,39 @@ cursor:pointer
 display:none;
 margin-top:8px;
 flex:1 1 auto;
-min-height:0;
+min-height:240px;
 width:100%;
 border-radius:10px;
 overflow:hidden;
 border:1px solid var(--bd);
-background:var(--in)
+background:var(--in);
+position:relative
 }
-.frame-wrap.open{display:block}
+.frame-wrap.open{display:flex;flex-direction:column}
+.frame-bar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:8px;
+padding:6px 10px;
+background:var(--s);
+border-bottom:1px solid var(--bd);
+font-size:11px;
+color:var(--mt)
+}
+.frame-bar a,.frame-bar button{
+color:var(--ac);
+background:none;
+border:none;
+font-size:11px;
+cursor:pointer;
+text-decoration:none
+}
+.frame-bar a:hover,.frame-bar button:hover{text-decoration:underline}
 .frame-wrap iframe{
+flex:1 1 auto;
 width:100%;
-height:100%;
+min-height:200px;
 border:none;
 display:block;
 background:transparent
@@ -294,7 +313,14 @@ background:transparent
 </div>
 
 <div class="frame-wrap" id="frameWrap">
-<iframe id="embedFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+<div class="frame-bar">
+<span id="frameInfo">Inline embed (some sites like YouTube Music / Notion block iframes)</span>
+<div style="display:flex;gap:10px;align-items:center">
+<a id="extLink" href="#" target="_blank" rel="noopener noreferrer">Open in tab ↗</a>
+<button id="closeFrameBtn" type="button">Hide</button>
+</div>
+</div>
+<iframe id="embedFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen></iframe>
 </div>
 </div>
 
@@ -345,6 +371,24 @@ if(/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(v))return"https://"+v;
 return"";
 }
 
+function toEmbedUrl(rawUrl){
+try{
+const u=new URL(rawUrl);
+const host=u.hostname.replace(/^www\./,"");
+if(host==="youtu.be"){
+const id=u.pathname.replace(/^\/+/,"").split("/")[0];
+if(id)return`https://www.youtube.com/embed/${encodeURIComponent(id)}`;
+}
+if(host==="youtube.com"||host==="m.youtube.com"){
+const v=u.searchParams.get("v");
+if(v)return`https://www.youtube.com/embed/${encodeURIComponent(v)}`;
+const list=u.searchParams.get("list");
+if(list&&u.pathname.includes("playlist"))return`https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(list)}`;
+}
+}catch(e){}
+return rawUrl;
+}
+
 function applyButtonSize(){
 const btn=$("launchBtn");
 btn.style.width=state.width+"px";
@@ -366,7 +410,13 @@ applyButtonSize();
 const showFrame=state.mode==="embed"&&state.embedOpen&&Boolean(state.url);
 $("frameWrap").classList.toggle("open",showFrame);
 if(showFrame){
-if($("embedFrame").src!==state.url)$("embedFrame").src=state.url;
+const targetSrc=toEmbedUrl(state.url);
+$("extLink").href=state.url;
+const isBlockedDomain=/music\.youtube\.com|notion\.so|notion\.site/i.test(state.url);
+$("frameInfo").textContent=isBlockedDomain
+?"Цей сервіс зазвичай блокує показ у iframe — скористайся «Open in tab ↗»."
+:targetSrc;
+if($("embedFrame").src!==targetSrc)$("embedFrame").src=targetSrc;
 }else{
 $("embedFrame").src="about:blank";
 }
@@ -392,7 +442,6 @@ $("btnWrap").classList.remove("editing");
 updateLayoutAlignment();
 }
 
-// Перетягування меж самої кнопки у режимі налаштування
 let dragCtx=null;
 document.querySelectorAll(".rh").forEach(handle=>{
 handle.addEventListener("pointerdown",e=>{
@@ -445,6 +494,12 @@ state.embedOpen=!state.embedOpen;
 saveState();
 render();
 }
+};
+
+$("closeFrameBtn").onclick=()=>{
+state.embedOpen=false;
+saveState();
+render();
 };
 
 $("gearBtn").onclick=()=>{
