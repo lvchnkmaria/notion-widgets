@@ -333,17 +333,20 @@ width:100%
 </div></div>
 
 <div class="mb" id="dm"><div class="md">
-<div class="mh"><div class="mti">Note</div><button class="xb" id="cd">×</button></div>
+<div class="mh"><div class="mti">Edit Book</div><button class="xb" id="cd">×</button></div>
 <div class="dt"><img class="dc" id="dc" src="" alt=""><div style="flex:1;min-width:0"><div class="ddt" id="dt"></div><div class="dda" id="da"></div></div></div>
+<div><label class="lb">Title *</label><input class="in" id="det-title"></div>
+<div><label class="lb">Author</label><input class="in" id="det-author"></div>
 <div><label class="lb">Annotation</label><textarea class="ta" id="dn"></textarea></div>
 <div><label class="lb">Cover URL</label><input class="in" id="dcu" placeholder="https://..."></div>
+<div><label class="lb">Upload cover</label><input type="file" id="det-file" accept="image/*" style="font-size:11px;color:var(--mt);max-width:100%"></div>
 <div class="mf"><button class="db" id="ddel">Remove</button><button class="sb" id="ds">Save</button></div>
 </div></div>
 
 <script>
 const K="notion_fav_bookshelf_v1",$=id=>document.getElementById(id);
 const FALLBACK_COVER="./stolen-pic.png";
-let books=[],aid=null,up="",qFilter="";
+let books=[],aid=null,up="",detUp="",qFilter="";
 const ld=()=>{try{const d=JSON.parse(localStorage.getItem(K)||"null");if(Array.isArray(d))books=d}catch(e){}};
 const sv=()=>{try{localStorage.setItem(K,JSON.stringify(books))}catch(e){}};
 const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -431,19 +434,22 @@ try{const r=await sG(q);if(r.length){showResults(r,"Google");return}}catch(e){}
 try{const r=await sO(q);if(r.length){showResults(r,"OpenLib");return}$("qm").textContent="Not found. Use Manual."}catch(e){$("qm").textContent="API blocked. Use Manual."}
 }
 $("qb").onclick=findB;$("qi").onkeydown=e=>{if(e.key==="Enter")findB()};
-$("mf").onchange=e=>{
-const f=e.target.files&&e.target.files[0];if(!f)return;const rd=new FileReader();
-rd.onload=ev=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),rt=Math.min(220/im.width,330/im.height,1);c.width=Math.round(im.width*rt);c.height=Math.round(im.height*rt);const ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);up=c.toDataURL("image/png");$("mc").value="[Uploaded image]"};im.src=ev.target.result};
+function readCoverFile(inputEl,urlInputEl,onDone){
+const f=inputEl.files&&inputEl.files[0];if(!f)return;const rd=new FileReader();
+rd.onload=ev=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),rt=Math.min(220/im.width,330/im.height,1);c.width=Math.round(im.width*rt);c.height=Math.round(im.height*rt);const ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);const dataUrl=c.toDataURL("image/png");if(urlInputEl)urlInputEl.value="[Uploaded image]";onDone(dataUrl)};im.src=ev.target.result};
 rd.readAsDataURL(f);
-};
+}
+$("mf").onchange=e=>readCoverFile(e.target,$("mc"),d=>{up=d});
+$("det-file").onchange=e=>readCoverFile(e.target,$("dcu"),d=>{detUp=d;$("dc").src=d});
 $("ms").onclick=()=>{
 const title=$("mt").value.trim();if(!title){$("mm").textContent="Enter title.";return}
 books.unshift({id:"b"+Date.now(),title,author:$("ma").value.trim(),cover:up||$("mc").value.trim(),note:$("mn").value.trim()});
 sv();ren();$("mt").value="";$("ma").value="";$("mc").value="";$("mn").value="";$("mf").value="";up="";$("am").classList.remove("open");
 };
 function openDet(id){
-const b=books.find(x=>x.id===id);if(!b)return;aid=id;
-$("dt").textContent=b.title;$("da").textContent=b.author||"";$("dn").value=b.note||"";
+const b=books.find(x=>x.id===id);if(!b)return;aid=id;detUp="";$("det-file").value="";
+$("dt").textContent=b.title;$("da").textContent=b.author||"";
+$("det-title").value=b.title||"";$("det-author").value=b.author||"";$("dn").value=b.note||"";
 $("dcu").value=b.cover&&!b.cover.startsWith("data:")?b.cover:"";
 const dc=$("dc");
 dc.onerror=()=>{dc.onerror=null;dc.src=FALLBACK_COVER};
@@ -451,7 +457,15 @@ dc.src=b.cover||FALLBACK_COVER;
 $("dm").classList.add("open");
 }
 $("cd").onclick=()=>$("dm").classList.remove("open");
-$("ds").onclick=()=>{const b=books.find(x=>x.id===aid);if(!b)return;b.note=$("dn").value.trim();const nc=$("dcu").value.trim();if(nc)b.cover=nc;sv();ren();$("dm").classList.remove("open")};
+$("ds").onclick=()=>{
+const b=books.find(x=>x.id===aid);if(!b)return;
+const nt=$("det-title").value.trim();if(nt)b.title=nt;
+b.author=$("det-author").value.trim();
+b.note=$("dn").value.trim();
+if(detUp){b.cover=detUp}
+else{const nc=$("dcu").value.trim();if(nc&&nc!=="[Uploaded image]")b.cover=nc;else if(!nc)b.cover=""}
+sv();ren();$("dm").classList.remove("open");
+};
 $("ddel").onclick=()=>{books=books.filter(x=>x.id!==aid);sv();ren();$("dm").classList.remove("open")};
 ld();ren();
 </script>
