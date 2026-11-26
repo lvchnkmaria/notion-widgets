@@ -290,7 +290,27 @@ background:transparent
 
 <script>
 const $=id=>document.getElementById(id);
-const STORAGE_KEY="book_nook_embed_btn_simple_v1";
+
+function getAutonomousKey(){
+try{
+const params=new URLSearchParams(window.location.search);
+const queryId=(params.get("id")||params.get("slot")||"").trim();
+if(queryId)return"book_nook_embed_btn_q_"+encodeURIComponent(queryId);
+}catch(e){}
+
+try{
+if(window.name&&window.name.startsWith("bn_embed_instance:")){
+return"book_nook_embed_btn_"+window.name.slice("bn_embed_instance:".length);
+}
+const uniqueId="inst_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8);
+window.name="bn_embed_instance:"+uniqueId;
+return"book_nook_embed_btn_"+uniqueId;
+}catch(e){
+return"book_nook_embed_btn_fallback";
+}
+}
+
+const STORAGE_KEY=getAutonomousKey();
 
 const DEFAULT_STATE={
 label:"Embed link",
