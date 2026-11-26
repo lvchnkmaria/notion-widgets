@@ -269,6 +269,24 @@ outline:none
 }
 .ta{resize:vertical;min-height:60px;font-family:inherit}
 .lb{font-size:11px;color:var(--mt);margin-bottom:3px;display:block}
+.cov-row{display:flex;gap:6px;align-items:center}
+.cov-row .in{flex:1 1 auto;min-width:0}
+.up-btn{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+background:var(--s);
+border:1px solid var(--bg2);
+color:var(--tx);
+font-size:11.5px;
+font-weight:400;
+padding:7px 10px;
+border-radius:8px;
+cursor:pointer;
+white-space:nowrap;
+flex-shrink:0
+}
+.up-btn:hover{background:var(--g1);border-color:var(--g3)}
 .rl{display:flex;flex-direction:column;gap:6px;max-height:185px;overflow-y:auto;margin-top:6px}
 .ri{
 display:flex;
@@ -326,8 +344,14 @@ width:100%
 <div id="pm" style="display:none">
 <div style="margin-bottom:6px"><label class="lb">Title *</label><input class="in" id="mt"></div>
 <div style="margin-bottom:6px"><label class="lb">Author</label><input class="in" id="ma"></div>
-<div style="margin-bottom:6px"><label class="lb">Cover URL</label><input class="in" id="mc" placeholder="https://..."></div>
-<div style="margin-bottom:6px"><label class="lb">Upload cover</label><input type="file" id="mf" accept="image/*" style="font-size:11px;color:var(--mt);max-width:100%"></div>
+<div style="margin-bottom:6px">
+<label class="lb">Cover URL or file</label>
+<div class="cov-row">
+<input class="in" id="mc" placeholder="https://...">
+<label class="up-btn" for="mf">Upload cover</label>
+<input type="file" id="mf" accept="image/*" style="display:none">
+</div>
+</div>
 <div><label class="lb">Annotation</label><textarea class="ta" id="mn"></textarea></div>
 <div class="mf" style="margin-top:8px"><span class="msg" id="mm"></span><button class="sb" id="ms">Add</button></div>
 </div>
@@ -344,8 +368,14 @@ width:100%
 </div>
 <div style="display:none"><div class="ddt" id="dt"></div><div class="dda" id="da"></div></div>
 <div><label class="lb">Annotation</label><textarea class="ta" id="dn"></textarea></div>
-<div><label class="lb">Cover URL</label><input class="in" id="dcu" placeholder="https://..."></div>
-<div><label class="lb">Upload cover</label><input type="file" id="det-file" accept="image/*" style="font-size:11px;color:var(--mt);max-width:100%"></div>
+<div>
+<label class="lb">Cover URL or file</label>
+<div class="cov-row">
+<input class="in" id="dcu" placeholder="https://...">
+<label class="up-btn" for="det-file">Upload cover</label>
+<input type="file" id="det-file" accept="image/*" style="display:none">
+</div>
+</div>
 <div class="mf"><button class="db" id="ddel">Remove</button><button class="sb" id="ds">Save</button></div>
 </div></div>
 
