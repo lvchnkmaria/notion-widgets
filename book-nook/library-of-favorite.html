@@ -342,7 +342,7 @@ width:100%
 
 <script>
 const K="notion_fav_bookshelf_v1",$=id=>document.getElementById(id);
-const FALLBACK_COVER="./stolen-pic.png";
+const FALLBACK_COVER="book-nook/stolen-pic.png";
 let books=[],aid=null,up="",qFilter="";
 const ld=()=>{try{const d=JSON.parse(localStorage.getItem(K)||"null");if(Array.isArray(d))books=d}catch(e){}};
 const sv=()=>{try{localStorage.setItem(K,JSON.stringify(books))}catch(e){}};
@@ -416,7 +416,7 @@ function showResults(list,srcLabel){
 $("qm").textContent=`${srcLabel}: click to add`;
 list.forEach(b=>{
 const row=document.createElement("button");row.className="ri";
-row.innerHTML=`<img class="rt" src="${esc(b.cover||FALLBACK_COVER)}" onerror="this.onerror=null;this.src='${FALLBACK_COVER}'"/><div class="rm"><div class="rbt">${esc(b.title)}</div><div class="rba">${esc(b.author||"Unknown author")}</div></div>`;
+row.innerHTML=`<img class="rt" src="${esc(b.cover||FALLBACK_COVER)}" onerror="this.onerror=null;this.src='${esc(FALLBACK_COVER)}'"/><div class="rm"><div class="rbt">${esc(b.title)}</div><div class="rba">${esc(b.author||"Unknown author")}</div></div>`;
 row.onclick=()=>{
 const note=prompt(`Note for "${b.title}":`)||"";
 books.unshift({id:"b"+Date.now()+Math.random().toString(36).slice(2,5),title:b.title,author:b.author,cover:b.cover,note:note.trim()});
