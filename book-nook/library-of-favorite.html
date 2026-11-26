@@ -311,3 +311,133 @@ html,body{
     </div>
   </div>
   <div class="sh" id="sh"></div>
+</div>
+
+<div class="mb" id="am"><div class="md">
+  <div class="mh"><div class="mti">Add Book</div><button class="xb" id="ca">×</button></div>
+  <div class="tbs"><button class="tb act" id="ts">Search API</button><button class="tb" id="tm">Manual / Cover</button></div>
+  <div id="ps">
+    <label class="lb">Title or author</label>
+    <div class="row"><input class="in" id="qi" placeholder="e.g. Dune, Murakami..."><button class="btn" id="qb">Find</button></div>
+    <div class="msg" id="qm" style="margin-top:5px"></div>
+    <div class="rl" id="qr"></div>
+  </div>
+  <div id="pm" style="display:none">
+    <div style="margin-bottom:6px"><label class="lb">Title *</label><input class="in" id="mt"></div>
+    <div style="margin-bottom:6px"><label class="lb">Author</label><input class="in" id="ma"></div>
+    <div style="margin-bottom:6px"><label class="lb">Cover URL</label><input class="in" id="mc" placeholder="https://..."></div>
+    <div style="margin-bottom:6px"><label class="lb">Upload cover</label><input type="file" id="mf" accept="image/*" style="font-size:11px;color:var(--mt);max-width:100%"></div>
+    <div><label class="lb">Annotation</label><textarea class="ta" id="mn"></textarea></div>
+    <div class="mf" style="margin-top:8px"><span class="msg" id="mm"></span><button class="sb" id="ms">Add</button></div>
+  </div>
+</div></div>
+
+<div class="mb" id="dm"><div class="md">
+  <div class="mh"><div class="mti">Note</div><button class="xb" id="cd">×</button></div>
+  <div class="dt"><img class="dc" id="dc" src="" alt=""><div style="flex:1;min-width:0"><div class="ddt" id="dt"></div><div class="dda" id="da"></div></div></div>
+  <div><label class="lb">Annotation</label><textarea class="ta" id="dn"></textarea></div>
+  <div><label class="lb">Cover URL</label><input class="in" id="dcu" placeholder="https://..."></div>
+  <div class="mf"><button class="db" id="ddel">Remove</button><button class="sb" id="ds">Save</button></div>
+</div></div>
+
+<script>
+const K="notion_fav_bookshelf_v1",$=id=>document.getElementById(id);
+let books=[],aid=null,up="",qFilter="";
+const ld=()=>{try{const d=JSON.parse(localStorage.getItem(K)||"null");if(Array.isArray(d))books=d}catch(e){}};
+const sv=()=>{try{localStorage.setItem(K,JSON.stringify(books))}catch(e){}};
+const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function placeFilterBox(){
+  const fbox=$("fbox"),top=$("top"),hinfo=$("hinfo"),acts=$("acts"),fs=$("fs");
+  if(!fbox.classList.contains("open")){fbox.classList.remove("below");return}
+  const topRect=top.getBoundingClientRect();
+  const hRect=hinfo.getBoundingClientRect();
+  const fsRect=fs.getBoundingClientRect();
+  const wrappedBelow=fsRect.top > hRect.bottom + 4;
+  const freeLeft=(fsRect.left - topRect.left) - 14;
+  const neededWidth=175;
+  const shouldBeBelow=wrappedBelow || freeLeft < neededWidth;
+  if(shouldBeBelow && !fbox.classList.contains("below")){
+    fbox.classList.add("below");
+    top.appendChild(fbox);
+  }else if(!shouldBeBelow && fbox.classList.contains("below")){
+    fbox.classList.remove("below");
+    acts.insertBefore(fbox,fs);
+  }
+}
+function ren(){
+  const sh=$("sh"),q=qFilter.trim().toLowerCase();
+  const list=q?books.filter(b=>[b.title,b.author,b.note].some(x=>String(x||"").toLowerCase().includes(q))):books;
+  $("cnt").textContent=q?`${list.length} of ${books.length} ${books.length===1?"book":"books"}`:`${books.length} ${books.length===1?"book":"books"}`;
+  sh.innerHTML="";
+  if(!books.length){sh.innerHTML='<div class="emp">Empty. Click "+ Add book".</div>';return}
+  if(!list.length){sh.innerHTML='<div class="emp">No matching books found.</div>';return}
+  list.forEach(b=>{
+    const card=document.createElement("div");card.className="bk";
+    const cv=document.createElement("div");cv.className="cv";
+    if(b.cover){const img=document.createElement("img");img.src=b.cover;img.alt=b.title;img.loading="lazy";img.onerror=()=>{img.remove();cv.innerHTML=`<div class="nc">${esc(b.title)}</div>`};cv.appendChild(img)}
+    else cv.innerHTML=`<div class="nc">${esc(b.title)}</div>`;
+    const t=document.createElement("div");t.className="bt";t.textContent=b.title;card.append(cv,t);
+    if(b.author){const a=document.createElement("div");a.className="ba";a.textContent=b.author;card.appendChild(a)}
+    if(b.note){const n=document.createElement("div");n.className="bn";n.textContent="✎ "+b.note;card.appendChild(n)}
+    card.onclick=()=>openDet(b.id);sh.appendChild(card);
+  });
+}
+$("sh").addEventListener("wheel",e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.currentTarget.scrollLeft+=e.deltaY;e.preventDefault()}},{passive:false});
+$("fs").onclick=()=>{
+  const open=!$("fbox").classList.contains("open");
+  $("fbox").classList.toggle("open",open);
+  $("fs").classList.toggle("act",open);
+  if(open){placeFilterBox();$("fi").focus()}
+  else{qFilter="";$("fi").value="";$("fbox").classList.remove("below");$("acts").insertBefore($("fbox"),$("fs"));ren()}
+};
+$("fi").oninput=e=>{qFilter=e.target.value;ren()};
+$("fclr").onclick=()=>{qFilter="";$("fi").value="";ren();$("fi").focus()};
+if(window.ResizeObserver){new ResizeObserver(placeFilterBox).observe($("w"))}
+window.addEventListener("resize",placeFilterBox);
+function setTab(m){const s=m==="search";$("ts").classList.toggle("act",s);$("tm").classList.toggle("act",!s);$("ps").style.display=s?"block":"none";$("pm").style.display=s?"none":"block"}
+$("oa").onclick=()=>{up="";$("mm").textContent="";$("am").classList.add("open");$("qi").focus()};
+$("ca").onclick=()=>$("am").classList.remove("open");
+$("ts").onclick=()=>setTab("search");$("tm").onclick=()=>setTab("manual");
+const sG=async q=>{const r=await fetch(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=8`);if(!r.ok)throw 0;const d=await r.json();return(d.items||[]).map(it=>{const v=it.volumeInfo||{};return{title:v.title||"Untitled",author:(v.authors||[]).join(", "),cover:((v.imageLinks&&(v.imageLinks.thumbnail||v.imageLinks.smallThumbnail))||"").replace(/^http:/,"https:")}})};
+const sO=async q=>{const r=await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=8`);if(!r.ok)throw 0;const d=await r.json();return(d.docs||[]).map(x=>({title:x.title||"Untitled",author:(x.author_name||[]).slice(0,2).join(", "),cover:x.cover_i?`https://covers.openlibrary.org/b/id/${x.cover_i}-M.jpg`:""}))};
+function showResults(list,srcLabel){
+  $("qm").textContent=`${srcLabel}: click to add`;
+  list.forEach(b=>{
+    const row=document.createElement("button");row.className="ri";
+    row.innerHTML=`<img class="rt" src="${esc(b.cover)}" onerror="this.style.visibility='hidden'"/><div class="rm"><div class="rbt">${esc(b.title)}</div><div class="rba">${esc(b.author||"Unknown author")}</div></div>`;
+    row.onclick=()=>{
+      const note=prompt(`Note for "${b.title}":`)||"";
+      books.unshift({id:"b"+Date.now()+Math.random().toString(36).slice(2,5),title:b.title,author:b.author,cover:b.cover,note:note.trim()});
+      sv();ren();$("am").classList.remove("open");
+    };
+    $("qr").appendChild(row);
+  });
+}
+async function findB(){
+  const q=$("qi").value.trim();if(!q)return;$("qm").textContent="Searching...";$("qr").innerHTML="";
+  try{const r=await sG(q);if(r.length){showResults(r,"Google");return}}catch(e){}
+  try{const r=await sO(q);if(r.length){showResults(r,"OpenLib");return}$("qm").textContent="Not found. Use Manual."}catch(e){$("qm").textContent="API blocked. Use Manual."}
+}
+$("qb").onclick=findB;$("qi").onkeydown=e=>{if(e.key==="Enter")findB()};
+$("mf").onchange=e=>{
+  const f=e.target.files&&e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=ev=>{const im=new Image();im.onload=()=>{const c=document.createElement("canvas"),rt=Math.min(220/im.width,330/im.height,1);c.width=Math.round(im.width*rt);c.height=Math.round(im.height*rt);const ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);up=c.toDataURL("image/png");$("mc").value="[Uploaded image]"};im.src=ev.target.result};
+  rd.readAsDataURL(f);
+};
+$("ms").onclick=()=>{
+  const title=$("mt").value.trim();if(!title){$("mm").textContent="Enter title.";return}
+  books.unshift({id:"b"+Date.now(),title,author:$("ma").value.trim(),cover:up||$("mc").value.trim(),note:$("mn").value.trim()});
+  sv();ren();$("mt").value="";$("ma").value="";$("mc").value="";$("mn").value="";$("mf").value="";up="";$("am").classList.remove("open");
+};
+function openDet(id){
+  const b=books.find(x=>x.id===id);if(!b)return;aid=id;
+  $("dt").textContent=b.title;$("da").textContent=b.author||"";$("dn").value=b.note||"";
+  $("dcu").value=b.cover&&!b.cover.startsWith("data:")?b.cover:"";$("dc").src=b.cover||"";$("dm").classList.add("open");
+}
+$("cd").onclick=()=>$("dm").classList.remove("open");
+$("ds").onclick=()=>{const b=books.find(x=>x.id===aid);if(!b)return;b.note=$("dn").value.trim();const nc=$("dcu").value.trim();if(nc)b.cover=nc;sv();ren();$("dm").classList.remove("open")};
+$("ddel").onclick=()=>{books=books.filter(x=>x.id!==aid);sv();ren();$("dm").classList.remove("open")};
+ld();ren();
+</script>
+</body>
+</html>
