@@ -342,6 +342,7 @@ width:100%
 
 <script>
 const K="notion_fav_bookshelf_v1",$=id=>document.getElementById(id);
+const FALLBACK_COVER="./stolen-pic.png";
 let books=[],aid=null,up="",qFilter="";
 const ld=()=>{try{const d=JSON.parse(localStorage.getItem(K)||"null");if(Array.isArray(d))books=d}catch(e){}};
 const sv=()=>{try{localStorage.setItem(K,JSON.stringify(books))}catch(e){}};
@@ -364,6 +365,18 @@ fbox.classList.remove("below");
 acts.insertBefore(fbox,fs);
 }
 }
+function makeCoverImg(src,alt){
+const img=document.createElement("img");
+img.src=src||FALLBACK_COVER;
+img.alt=alt;
+img.loading="lazy";
+img.onerror=()=>{
+if(img.dataset.fbApplied)return;
+img.dataset.fbApplied="1";
+img.src=FALLBACK_COVER;
+};
+return img;
+}
 function ren(){
 const sh=$("sh"),q=qFilter.trim().toLowerCase();
 const list=q?books.filter(b=>[b.title,b.author,b.note].some(x=>String(x||"").toLowerCase().includes(q))):books;
@@ -374,8 +387,7 @@ if(!list.length){sh.innerHTML='<div class="emp">No matching books found.</div>';
 list.forEach(b=>{
 const card=document.createElement("div");card.className="bk";
 const cv=document.createElement("div");cv.className="cv";
-if(b.cover){const img=document.createElement("img");img.src=b.cover;img.alt=b.title;img.loading="lazy";img.onerror=()=>{img.remove();cv.innerHTML=`<div class="nc">${esc(b.title)}</div>`};cv.appendChild(img)}
-else cv.innerHTML=`<div class="nc">${esc(b.title)}</div>`;
+cv.appendChild(makeCoverImg(b.cover,b.title));
 const t=document.createElement("div");t.className="bt";t.textContent=b.title;card.append(cv,t);
 if(b.author){const a=document.createElement("div");a.className="ba";a.textContent=b.author;card.appendChild(a)}
 if(b.note){const n=document.createElement("div");n.className="bn";n.textContent="✎ "+b.note;card.appendChild(n)}
@@ -404,7 +416,7 @@ function showResults(list,srcLabel){
 $("qm").textContent=`${srcLabel}: click to add`;
 list.forEach(b=>{
 const row=document.createElement("button");row.className="ri";
-row.innerHTML=`<img class="rt" src="${esc(b.cover)}" onerror="this.style.visibility='hidden'"/><div class="rm"><div class="rbt">${esc(b.title)}</div><div class="rba">${esc(b.author||"Unknown author")}</div></div>`;
+row.innerHTML=`<img class="rt" src="${esc(b.cover||FALLBACK_COVER)}" onerror="this.onerror=null;this.src='${FALLBACK_COVER}'"/><div class="rm"><div class="rbt">${esc(b.title)}</div><div class="rba">${esc(b.author||"Unknown author")}</div></div>`;
 row.onclick=()=>{
 const note=prompt(`Note for "${b.title}":`)||"";
 books.unshift({id:"b"+Date.now()+Math.random().toString(36).slice(2,5),title:b.title,author:b.author,cover:b.cover,note:note.trim()});
@@ -432,7 +444,11 @@ sv();ren();$("mt").value="";$("ma").value="";$("mc").value="";$("mn").value="";$
 function openDet(id){
 const b=books.find(x=>x.id===id);if(!b)return;aid=id;
 $("dt").textContent=b.title;$("da").textContent=b.author||"";$("dn").value=b.note||"";
-$("dcu").value=b.cover&&!b.cover.startsWith("data:")?b.cover:"";$("dc").src=b.cover||"";$("dm").classList.add("open");
+$("dcu").value=b.cover&&!b.cover.startsWith("data:")?b.cover:"";
+const dc=$("dc");
+dc.onerror=()=>{dc.onerror=null;dc.src=FALLBACK_COVER};
+dc.src=b.cover||FALLBACK_COVER;
+$("dm").classList.add("open");
 }
 $("cd").onclick=()=>$("dm").classList.remove("open");
 $("ds").onclick=()=>{const b=books.find(x=>x.id===aid);if(!b)return;b.note=$("dn").value.trim();const nc=$("dcu").value.trim();if(nc)b.cover=nc;sv();ren();$("dm").classList.remove("open")};
