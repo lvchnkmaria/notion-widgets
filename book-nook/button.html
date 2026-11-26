@@ -227,39 +227,18 @@ cursor:pointer
 display:none;
 margin-top:8px;
 flex:1 1 auto;
-min-height:240px;
+min-height:220px;
 width:100%;
 border-radius:10px;
 overflow:hidden;
 border:1px solid var(--bd);
-background:var(--in);
-position:relative
+background:var(--in)
 }
-.frame-wrap.open{display:flex;flex-direction:column}
-.frame-bar{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:8px;
-padding:6px 10px;
-background:var(--s);
-border-bottom:1px solid var(--bd);
-font-size:11px;
-color:var(--mt)
-}
-.frame-bar a,.frame-bar button{
-color:var(--ac);
-background:none;
-border:none;
-font-size:11px;
-cursor:pointer;
-text-decoration:none
-}
-.frame-bar a:hover,.frame-bar button:hover{text-decoration:underline}
+.frame-wrap.open{display:block}
 .frame-wrap iframe{
-flex:1 1 auto;
 width:100%;
-min-height:200px;
+height:100%;
+min-height:220px;
 border:none;
 display:block;
 background:transparent
@@ -278,7 +257,7 @@ background:transparent
 <button class="gear-btn" id="gearBtn" type="button" title="Settings" aria-label="Settings">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 <circle cx="12" cy="12" r="3"/>
-<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
 </svg>
 </button>
 </div>
@@ -302,6 +281,10 @@ background:transparent
 <option value="embed">Toggle inline embed</option>
 </select>
 </div>
+<div class="field">
+<label class="lb" for="slotInput">Unique ID (for multiple buttons)</label>
+<input class="in" id="slotInput" type="text" placeholder="e.g. btn-1, btn-2"/>
+</div>
 </div>
 <div class="foot">
 <span class="msg" id="msg">Drag button edges to resize</span>
@@ -313,20 +296,33 @@ background:transparent
 </div>
 
 <div class="frame-wrap" id="frameWrap">
-<div class="frame-bar">
-<span id="frameInfo">Inline embed (some sites like YouTube Music / Notion block iframes)</span>
-<div style="display:flex;gap:10px;align-items:center">
-<a id="extLink" href="#" target="_blank" rel="noopener noreferrer">Open in tab ↗</a>
-<button id="closeFrameBtn" type="button">Hide</button>
-</div>
-</div>
 <iframe id="embedFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen></iframe>
 </div>
 </div>
 
 <script>
-const STORAGE_KEY="book_nook_embed_btn_v2";
 const $=id=>document.getElementById(id);
+
+function resolveInitialSlotId(){
+try{
+const params=new URLSearchParams(window.location.search);
+const fromQuery=(params.get("id")||params.get("slot")||"").trim();
+if(fromQuery)return fromQuery;
+}catch(e){}
+try{
+if(window.name&&window.name.startsWith("bn_slot:")){
+return window.name.slice("bn_slot:".length);
+}
+const generated="slot_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,7);
+window.name="bn_slot:"+generated;
+return generated;
+}catch(e){
+return"default";
+}
+}
+
+let slotId=resolveInitialSlotId();
+const storageKeyFor=id=>"book_nook_embed_btn_"+encodeURIComponent(id||"default");
 
 const DEFAULT_STATE={
 label:"Embed link",
@@ -339,9 +335,10 @@ height:36
 
 let state={...DEFAULT_STATE};
 
-function loadState(){
+function loadState(id=slotId){
+state={...DEFAULT_STATE};
 try{
-const raw=localStorage.getItem(STORAGE_KEY);
+const raw=localStorage.getItem(storageKeyFor(id));
 if(!raw)return;
 const p=JSON.parse(raw);
 if(p&&typeof p==="object"){
@@ -357,9 +354,9 @@ height:typeof p.height==="number"&&p.height>=26?Math.min(p.height,140):36
 }catch(e){}
 }
 
-function saveState(){
+function saveState(id=slotId){
 try{
-localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+localStorage.setItem(storageKeyFor(id),JSON.stringify(state));
 }catch(e){}
 }
 
@@ -411,11 +408,6 @@ const showFrame=state.mode==="embed"&&state.embedOpen&&Boolean(state.url);
 $("frameWrap").classList.toggle("open",showFrame);
 if(showFrame){
 const targetSrc=toEmbedUrl(state.url);
-$("extLink").href=state.url;
-const isBlockedDomain=/music\.youtube\.com|notion\.so|notion\.site/i.test(state.url);
-$("frameInfo").textContent=isBlockedDomain
-?"Цей сервіс зазвичай блокує показ у iframe — скористайся «Open in tab ↗»."
-:targetSrc;
 if($("embedFrame").src!==targetSrc)$("embedFrame").src=targetSrc;
 }else{
 $("embedFrame").src="about:blank";
@@ -427,6 +419,7 @@ function openPanel(){
 $("labelInput").value=state.label;
 $("urlInput").value=state.url;
 $("modeSelect").value=state.mode;
+$("slotInput").value=slotId;
 $("msg").textContent="Drag button edges to resize";
 $("panel").classList.add("open");
 $("gearBtn").classList.add("act");
@@ -496,42 +489,41 @@ render();
 }
 };
 
-$("closeFrameBtn").onclick=()=>{
-state.embedOpen=false;
-saveState();
-render();
-};
-
 $("gearBtn").onclick=()=>{
 if($("panel").classList.contains("open"))closePanel();
 else openPanel();
 };
 
 $("saveBtn").onclick=()=>{
+const nextSlot=($("slotInput").value||"").trim()||slotId;
 const nextLabel=$("labelInput").value.trim()||"Embed link";
 const nextUrl=normalizeUrl($("urlInput").value);
 if($("urlInput").value.trim()&&!nextUrl){
 $("msg").textContent="Invalid URL.";
 return;
 }
+if(nextSlot!==slotId){
+slotId=nextSlot;
+try{window.name="bn_slot:"+slotId}catch(e){}
+}
 state.label=nextLabel;
 state.url=nextUrl;
 state.mode=$("modeSelect").value==="embed"?"embed":"tab";
 if(!state.url||state.mode!=="embed")state.embedOpen=false;
-saveState();
+saveState(slotId);
 render();
 closePanel();
 };
 
 $("clearBtn").onclick=()=>{
 state={...DEFAULT_STATE};
-saveState();
+saveState(slotId);
 render();
 openPanel();
 $("msg").textContent="Reset.";
 };
 
-loadState();
+loadState(slotId);
 render();
 </script>
 </body>
