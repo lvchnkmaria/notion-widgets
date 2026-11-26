@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="color-scheme" content="dark"/>
+<title>Custom Embed</title>
+<style>
+:root{
+--s:#202320;
+--in:#161715;
+--bd:rgba(158,131,110,.22);
+--bg2:rgba(107,140,119,.28);
+--g1:#2a3a30;
+--g2:#3f5c4b;
+--g3:#6b8f78;
+--tx:#eae5de;
+--mt:#9d958c;
+--ac:#cbb29d;
+--dn:#c97a72;
+--w-bg:rgba(92,71,55,.10)
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{
+width:100%;
+height:100%;
+max-width:100%;
+background:transparent!important;
+color:var(--tx);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+padding:clamp(4px,1vw,8px);
+overflow:hidden
+}
+.w{
+width:100%;
+height:100%;
+min-width:0;
+min-height:0;
+display:flex;
+flex-direction:column;
+background:var(--w-bg);
+border:1px solid var(--bd);
+border-radius:clamp(12px,2vw,18px);
+padding:clamp(14px,2.2vh,18px) clamp(14px,2vw,18px);
+overflow:hidden
+}
+.bar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+flex-wrap:wrap;
+flex-shrink:0
+}
+.left-grp{
+display:flex;
+align-items:center;
+gap:10px;
+min-width:0;
+flex:1 1 180px
+}
+.main-btn{
+height:clamp(34px,4.4vh,40px);
+display:inline-flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+background:var(--s);
+border:1px solid var(--bg2);
+color:var(--tx);
+font-size:clamp(12.5px,1.8vw,14px);
+font-weight:400;
+line-height:1;
+padding:0 clamp(14px,2vw,18px);
+border-radius:10px;
+cursor:pointer;
+white-space:nowrap;
+max-width:100%;
+overflow:hidden;
+text-overflow:ellipsis;
+transition:.15s
+}
+.main-btn:hover{
+background:var(--g1);
+border-color:var(--g3)
+}
+.main-btn.primary{
+background:var(--g1);
+border-color:rgba(107,140,119,.45)
+}
+.main-btn.primary:hover{
+background:var(--g2);
+border-color:var(--g3)
+}
+.url-hint{
+font-size:11.5px;
+color:var(--mt);
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+min-width:0
+}
+.right-grp{
+display:flex;
+align-items:center;
+gap:8px;
+flex-shrink:0
+}
+.icon-btn{
+height:clamp(30px,3.8vh,34px);
+display:inline-flex;
+align-items:center;
+justify-content:center;
+background:var(--in);
+border:1px solid var(--bd);
+color:var(--mt);
+font-size:12px;
+font-weight:400;
+line-height:1;
+padding:0 11px;
+border-radius:8px;
+cursor:pointer;
+white-space:nowrap;
+transition:.15s
+}
+.icon-btn:hover,.icon-btn.act{
+background:var(--g1);
+border-color:var(--g3);
+color:var(--tx)
+}
+.panel{
+display:none;
+margin-top:12px;
+background:var(--in);
+border:1px solid var(--bd);
+border-radius:12px;
+padding:12px;
+flex-direction:column;
+gap:9px;
+flex-shrink:0
+}
+.panel.open{display:flex}
+.grid2{
+display:flex;
+gap:8px;
+flex-wrap:wrap
+}
+.field{
+flex:1 1 160px;
+min-width:0;
+display:flex;
+flex-direction:column;
+gap:4px
+}
+.lb{
+font-size:11px;
+color:var(--mt)
+}
+.in,.sel{
+width:100%;
+min-width:0;
+background:var(--s);
+border:1px solid var(--bd);
+border-radius:8px;
+padding:7px 9px;
+font-size:12px;
+color:var(--tx);
+outline:none;
+font-family:inherit
+}
+.in:focus,.sel:focus{border-color:var(--g3)}
+.in::placeholder{color:var(--mt)}
+.foot{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:8px;
+flex-wrap:wrap;
+margin-top:2px
+}
+.msg{font-size:11px;color:var(--ac)}
+.act-row{display:flex;gap:8px;align-items:center}
+.clr-btn{
+background:rgba(201,122,114,.14);
+border:1px solid rgba(201,122,114,.35);
+color:var(--dn);
+font-size:11.5px;
+padding:6px 10px;
+border-radius:8px;
+cursor:pointer
+}
+.save-btn{
+background:var(--g2);
+border:1px solid var(--g3);
+color:#f3f1ed;
+font-size:12px;
+padding:6px 14px;
+border-radius:8px;
+cursor:pointer
+}
+.save-btn:hover{background:var(--g3)}
+.frame-wrap{
+display:none;
+margin-top:12px;
+flex:1 1 auto;
+min-height:0;
+width:100%;
+border-radius:12px;
+overflow:hidden;
+border:1px solid var(--bd);
+background:var(--in)
+}
+.frame-wrap.open{display:block}
+.frame-wrap iframe{
+width:100%;
+height:100%;
+border:none;
+display:block;
+background:transparent
+}
+.status-note{
+font-size:11px;
+color:var(--mt);
+margin-top:8px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
+}
+</style>
+</head>
+<body>
+<div class="w" id="w">
+<div class="bar">
+<div class="left-grp">
+<button class="main-btn primary" id="launchBtn" type="button">Embed link</button>
+<span class="url-hint" id="urlHint">No link set yet</span>
+</div>
+<div class="right-grp">
+<button class="icon-btn" id="editBtn" type="button">Customize</button>
+</div>
+</div>
+
+<div class="panel" id="panel">
+<div class="grid2">
+<div class="field">
+<label class="lb" for="labelInput">Button label</label>
+<input class="in" id="labelInput" type="text" placeholder="e.g. Open Reading List, Soundtrack..."/>
+</div>
+<div class="field">
+<label class="lb" for="urlInput">Link URL</label>
+<input class="in" id="urlInput" type="url" placeholder="https://..."/>
+</div>
+</div>
+<div class="grid2">
+<div class="field">
+<label class="lb" for="modeSelect">Click behavior</label>
+<select class="sel" id="modeSelect">
+<option value="tab">Open in new tab</option>
+<option value="embed">Toggle inline embed</option>
+</select>
+</div>
+</div>
+<div class="foot">
+<span class="msg" id="msg"></span>
+<div class="act-row">
+<button class="clr-btn" id="clearBtn" type="button">Reset</button>
+<button class="save-btn" id="saveBtn" type="button">Save button</button>
+</div>
+</div>
+</div>
+
+<div class="frame-wrap" id="frameWrap">
+<iframe id="embedFrame" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+</div>
+
+<div class="status-note" id="statusNote"></div>
+</div>
+
+<script>
+const STORAGE_KEY="book_nook_custom_embed_v1";
+const $=id=>document.getElementById(id);
+
+let state={
+label:"Embed link",
+url:"",
+mode:"tab",
+embedOpen:false
+};
+
+function loadState(){
+try{
+const raw=localStorage.getItem(STORAGE_KEY);
+if(!raw)return;
+const parsed=JSON.parse(raw);
+if(parsed&&typeof parsed==="object"){
+state={
+label:typeof parsed.label==="string"&&parsed.label.trim()?parsed.label.trim():"Embed link",
+url:typeof parsed.url==="string"?parsed.url.trim():"",
+mode:parsed.mode==="embed"?"embed":"tab",
+embedOpen:Boolean(parsed.embedOpen)
+};
+}
+}catch(e){}
+}
+
+function saveState(){
+try{
+localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+}catch(e){}
+}
+
+function normalizeUrl(raw){
+const v=String(raw||"").trim();
+if(!v)return"";
+if(/^https?:\/\//i.test(v))return v;
+if(/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(v))return"https://"+v;
+return"";
+}
+
+function render(){
+$("launchBtn").textContent=state.label||"Embed link";
+$("urlHint").textContent=state.url?state.url:"Click Customize to set label & link";
+const showFrame=state.mode==="embed"&&state.embedOpen&&Boolean(state.url);
+$("frameWrap").classList.toggle("open",showFrame);
+if(showFrame){
+if($("embedFrame").src!==state.url){
+$("embedFrame").src=state.url;
+}
+$("statusNote").textContent="Showing inline embed (if a site blocks embeds, switch mode to Open in new tab).";
+}else{
+$("embedFrame").src="about:blank";
+$("statusNote").textContent=state.url
+?`Mode: ${state.mode==="embed"?"Inline embed":"New tab"}`
+:"";
+}
+}
+
+function openPanel(){
+$("labelInput").value=state.label;
+$("urlInput").value=state.url;
+$("modeSelect").value=state.mode;
+$("msg").textContent="";
+$("panel").classList.add("open");
+$("editBtn").classList.add("act");
+$("labelInput").focus();
+}
+
+function closePanel(){
+$("panel").classList.remove("open");
+$("editBtn").classList.remove("act");
+}
+
+$("launchBtn").onclick=()=>{
+if(!state.url){
+openPanel();
+$("msg").textContent="Paste a link first.";
+return;
+}
+if(state.mode==="tab"){
+window.open(state.url,"_blank","noopener,noreferrer");
+}else{
+state.embedOpen=!state.embedOpen;
+saveState();
+render();
+}
+};
+
+$("editBtn").onclick=()=>{
+if($("panel").classList.contains("open"))closePanel();
+else openPanel();
+};
+
+$("saveBtn").onclick=()=>{
+const nextLabel=$("labelInput").value.trim()||"Embed link";
+const nextUrl=normalizeUrl($("urlInput").value);
+if($("urlInput").value.trim()&&!nextUrl){
+$("msg").textContent="Please enter a valid http(s) URL.";
+return;
+}
+state.label=nextLabel;
+state.url=nextUrl;
+state.mode=$("modeSelect").value==="embed"?"embed":"tab";
+if(!state.url||state.mode!=="embed")state.embedOpen=false;
+saveState();
+render();
+closePanel();
+};
+
+$("clearBtn").onclick=()=>{
+state={label:"Embed link",url:"",mode:"tab",embedOpen:false};
+saveState();
+render();
+openPanel();
+$("msg").textContent="Reset to default.";
+};
+
+loadState();
+render();
+</script>
+</body>
+</html>
