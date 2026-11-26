@@ -342,7 +342,7 @@ width:100%
 
 <script>
 const K="notion_fav_bookshelf_v1",$=id=>document.getElementById(id);
-const FALLBACK_COVER="book-nook/stolen-pic.png";
+const FALLBACK_COVER="./stolen-pic.png";
 let books=[],aid=null,up="",qFilter="";
 const ld=()=>{try{const d=JSON.parse(localStorage.getItem(K)||"null");if(Array.isArray(d))books=d}catch(e){}};
 const sv=()=>{try{localStorage.setItem(K,JSON.stringify(books))}catch(e){}};
