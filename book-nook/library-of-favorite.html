@@ -287,10 +287,11 @@ width:100%
 .rm{flex:1;min-width:0}
 .rbt{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rba{font-size:11px;color:var(--mt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dt{display:flex;gap:10px;align-items:flex-start}
-.dc{width:72px;height:106px;border-radius:7px;object-fit:cover;background:transparent;border:1px solid var(--bd);flex-shrink:0}
+.dt{display:flex;gap:10px;align-items:center}
+.dc{width:76px;height:112px;border-radius:7px;object-fit:cover;background:transparent;border:1px solid var(--bd);flex-shrink:0}
+.d-side{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 .ddt{font-size:14px;font-weight:700;overflow-wrap:anywhere}
-.dda{font-size:11px;color:var(--mt);margin-top:2px;overflow-wrap:anywhere}
+.dda{font-size:11px;color:var(--mt);overflow-wrap:anywhere}
 .mf{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
 .db{background:rgba(201,122,114,.14);border:1px solid rgba(201,122,114,.35);color:var(--dn);font-size:11px;font-weight:600;padding:5px 9px;border-radius:8px;cursor:pointer}
 .sb{background:var(--g2);border:1px solid var(--g3);color:#f3f1ed;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer}
@@ -334,9 +335,14 @@ width:100%
 
 <div class="mb" id="dm"><div class="md">
 <div class="mh"><div class="mti">Edit Book</div><button class="xb" id="cd">×</button></div>
-<div class="dt"><img class="dc" id="dc" src="" alt=""><div style="flex:1;min-width:0"><div class="ddt" id="dt"></div><div class="dda" id="da"></div></div></div>
+<div class="dt">
+<img class="dc" id="dc" src="" alt="">
+<div class="d-side">
 <div><label class="lb">Title *</label><input class="in" id="det-title"></div>
 <div><label class="lb">Author</label><input class="in" id="det-author"></div>
+</div>
+</div>
+<div style="display:none"><div class="ddt" id="dt"></div><div class="dda" id="da"></div></div>
 <div><label class="lb">Annotation</label><textarea class="ta" id="dn"></textarea></div>
 <div><label class="lb">Cover URL</label><input class="in" id="dcu" placeholder="https://..."></div>
 <div><label class="lb">Upload cover</label><input type="file" id="det-file" accept="image/*" style="font-size:11px;color:var(--mt);max-width:100%"></div>
