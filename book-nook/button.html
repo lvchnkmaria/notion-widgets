@@ -37,22 +37,25 @@ min-height:0;
 display:flex;
 flex-direction:column;
 background:transparent;
-padding:clamp(4px,1vw,8px);
+padding:4px;
 overflow:hidden
 }
 .row-top{
 display:inline-flex;
 align-items:center;
-gap:clamp(6px,1vw,10px);
+gap:8px;
 flex-shrink:0;
 width:fit-content;
 max-width:100%
 }
 .ebtn{
-height:clamp(28px,5.5vh,48px);
-padding:0 clamp(12px,2.4vw,24px);
-font-size:clamp(12px,2.1vw,16px);
-border-radius:clamp(7px,1.2vw,11px);
+width:150px;
+height:36px;
+min-width:64px;
+min-height:24px;
+max-width:calc(100vw - 48px);
+padding:0 14px;
+font-size:13.5px;
 display:inline-flex;
 align-items:center;
 justify-content:center;
@@ -60,21 +63,21 @@ background:var(--s);
 border:1px solid var(--bg2);
 color:var(--tx);
 font-weight:400;
-line-height:1;
+line-height:1.1;
+border-radius:9px;
 cursor:pointer;
 white-space:nowrap;
-max-width:100%;
 overflow:hidden;
 text-overflow:ellipsis;
-transition:.15s
+transition:background .15s,border-color .15s
 }
 .ebtn:hover{
 background:var(--g1);
 border-color:var(--g3)
 }
 .gear-btn{
-width:clamp(24px,4vh,34px);
-height:clamp(24px,4vh,34px);
+width:28px;
+height:28px;
 display:inline-flex;
 align-items:center;
 justify-content:center;
@@ -91,8 +94,8 @@ color:var(--tx);
 background:rgba(158,131,110,.12)
 }
 .gear-btn svg{
-width:clamp(14px,2.2vh,18px);
-height:clamp(14px,2.2vh,18px);
+width:15px;
+height:15px;
 display:block
 }
 .panel{
@@ -190,7 +193,7 @@ background:transparent
 </style>
 </head>
 <body>
-<div class="root">
+<div class="root" id="root">
 <div class="row-top">
 <button class="ebtn" id="launchBtn" type="button">Embed link</button>
 <button class="gear-btn" id="gearBtn" type="button" title="Settings" aria-label="Settings">
@@ -236,15 +239,17 @@ background:transparent
 </div>
 
 <script>
-const STORAGE_KEY="book_nook_embed_btn_v1";
+const STORAGE_KEY="book_nook_embed_btn_v3";
 const $=id=>document.getElementById(id);
 
-let state={
+const DEFAULT_STATE={
 label:"Embed link",
 url:"",
 mode:"tab",
 embedOpen:false
 };
+
+let state={...DEFAULT_STATE};
 
 function loadState(){
 try{
@@ -276,8 +281,36 @@ if(/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(v))return"https://"+v;
 return"";
 }
 
+function syncButtonToEmbedBounds(){
+const root=$("root");
+const btn=$("launchBtn");
+if(!root||!btn)return;
+
+const w=root.clientWidth;
+const h=root.clientHeight;
+const panelOpen=$("panel").classList.contains("open");
+const frameOpen=$("frameWrap").classList.contains("open");
+
+// Якщо відкритий inline embed або панель налаштувань — залишаємо висоту кнопки компактною
+const targetH=(panelOpen||frameOpen)
+?Math.max(28,Math.min(44,Math.round(h*0.14)))
+:Math.max(26,Math.min(180,h-12));
+
+// Ширина підлаштовується під ширину embed-блока (з урахуванням шестерні та відступів)
+const availW=Math.max(68,w-52);
+const targetW=Math.max(84,Math.min(availW,Math.round(w*0.45)));
+
+btn.style.height=targetH+"px";
+btn.style.width=targetW+"px";
+const fontSize=Math.max(12,Math.min(24,Math.round(targetH*0.38)));
+btn.style.fontSize=fontSize+"px";
+btn.style.padding=`0 ${Math.max(10,Math.min(28,Math.round(targetH*0.4)))}px`;
+}
+
 function render(){
-$("launchBtn").textContent=state.label||"Embed link";
+const btn=$("launchBtn");
+btn.textContent=state.label||"Embed link";
+
 const showFrame=state.mode==="embed"&&state.embedOpen&&Boolean(state.url);
 $("frameWrap").classList.toggle("open",showFrame);
 if(showFrame){
@@ -285,6 +318,7 @@ if($("embedFrame").src!==state.url)$("embedFrame").src=state.url;
 }else{
 $("embedFrame").src="about:blank";
 }
+syncButtonToEmbedBounds();
 }
 
 function openPanel(){
@@ -294,13 +328,20 @@ $("modeSelect").value=state.mode;
 $("msg").textContent="";
 $("panel").classList.add("open");
 $("gearBtn").classList.add("act");
+syncButtonToEmbedBounds();
 $("labelInput").focus();
 }
 
 function closePanel(){
 $("panel").classList.remove("open");
 $("gearBtn").classList.remove("act");
+syncButtonToEmbedBounds();
 }
+
+if(window.ResizeObserver){
+new ResizeObserver(syncButtonToEmbedBounds).observe($("root"));
+}
+window.addEventListener("resize",syncButtonToEmbedBounds);
 
 $("launchBtn").onclick=()=>{
 if(!state.url){
@@ -339,7 +380,7 @@ closePanel();
 };
 
 $("clearBtn").onclick=()=>{
-state={label:"Embed link",url:"",mode:"tab",embedOpen:false};
+state={...DEFAULT_STATE};
 saveState();
 render();
 openPanel();
